@@ -1,4 +1,5 @@
-This project contains files that may be used for OpenScad projects.
+This project contains files that may be used for OpenScad projects. It saves me
+some time and fiddling around, and some mistakes.
 
 ## Usage
 
@@ -39,3 +40,5 @@ Touching `src/knob.scad` then running `$ make` will make `stl/knob.stl` only.
 
 Running `make clean` deletes all the temp files, `stl/` and `.deps/`.
 
+## What's more.
+There's clearly much more that could go here. This is just a start.

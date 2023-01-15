@@ -42,3 +42,7 @@ Running `make clean` deletes all the temp files, `stl/` and `.deps/`.
 
 ## What's more.
 There's clearly much more that could go here. This is just a start.
+
+## What's even more.
+This is supposed to work well with the `assembly` module of `github:billwhite/GRISCAD`.
+Maybe it does.

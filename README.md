@@ -12,11 +12,14 @@ some time and fiddling around, and some mistakes.
    1. A `.gitignore` file.
    1. A `src` directory, which includes all OpenScad sources.
    1. A file named `assemblies.txt`.
+   1. A file named 'others.txt'
 1. In the file `assemblies.txt`, list the names of all the OpenScad sources in src without 
 the initial `src/`. There may be other files in `src/` as well, but all top level assemblies
 should be listed in `assemblies.txt`.
+1. If you have other artifacts you use, maybe for testing or as mockups, add them to `others.txt`.`
 1. Run `$ make` to create the `.stl` files. They will show up in the `stl/` folder, which
 `make` will create.
+1. Run `$ make others` to make the others if there are any. Run `make everything` to make everything.
 1. Dependencies will be stored in a folder named `.deps/`. But this is handled
 silently. Make uses these to try to avoid unnecessary OpenScad runs.
 1. All `stl/*.stl` files and dependency files are ignored by the .gitignore file, so they

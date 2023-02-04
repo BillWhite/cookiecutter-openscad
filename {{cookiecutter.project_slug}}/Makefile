@@ -13,20 +13,20 @@ DEPS=$(patsubst %, $(DEP_DIR)/%.d, $(ASSEMBLIES) $(OTHERS))
 
 $(print $(OTHER_OBJS))
 
-target: $(DIRS) $(OBJS)
+target: $(OBJS) | dirs
 
-others: $(DIRS) $(OTHER_OBJS)
+others: $(OTHER_OBJS) | dirs
 
 everything: target others
 
-$(STL_DIR)/%.stl: $(SRC_DIR)/%.scad | $(DIRS)
+$(STL_DIR)/%.stl: $(SRC_DIR)/%.scad | dirs
 	openscad -o $@ $< -d $(DEP_DIR)/$*.d
 
-$(OTHER_STL_DIR)/%.stl: $(SRC_DIR)/%.scad | $(DIRS)
+$(OTHER_STL_DIR)/%.stl: $(SRC_DIR)/%.scad | dirs
 	openscad -o $@ $< -d $(DEP_DIR)/$*.d
 
-$(DIRS):
-	mkdir -p $(DEP_DIR) $(STL_DIR) $(OTHER_STL_DIR)
+dirs:
+	mkdir -p $(DIRS)
 
 clean:
 	rm -rf $(CLEANOBJS)

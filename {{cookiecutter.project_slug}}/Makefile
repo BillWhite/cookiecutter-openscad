@@ -2,12 +2,13 @@ ASSEMBLIES=$(shell cat assemblies.txt)
 OTHERS=$(shell cat others.txt)
 DEP_DIR=.deps
 STL_DIR=stl
+OTHER_STL_DIR=other_stl
 SRC_DIR=src
-DIRS=$(DEP_DIR) $(STL_DIR)
-CLEANOBJS=$(DEP_DIR) $(STL_DIR)
+DIRS=$(DEP_DIR) $(STL_DIR) $(OTHER_STL_DIR)
+CLEANOBJS=$(DIRS)
 
 OBJS=$(patsubst %, $(STL_DIR)/%.stl, $(ASSEMBLIES))
-OTHER_OBJS=$(patsubst %,$(STL_DIR)/%.stl, $(OTHERS))
+OTHER_OBJS=$(patsubst %,$(OTHER_STL_DIR)/%.stl, $(OTHERS))
 DEPS=$(patsubst %, $(DEP_DIR)/%.d, $(ASSEMBLIES) $(OTHERS))
 
 $(print $(OTHER_OBJS))
@@ -21,8 +22,11 @@ everything: target others
 $(STL_DIR)/%.stl: $(SRC_DIR)/%.scad | $(DIRS)
 	openscad -o $@ $< -d $(DEP_DIR)/$*.d
 
+$(OTHER_STL_DIR)/%.stl: $(SRC_DIR)/%.scad | $(DIRS)
+	openscad -o $@ $< -d $(DEP_DIR)/$*.d
+
 $(DIRS):
-	mkdir $(DEP_DIR) $(STL_DIR)
+	mkdir -p $(DEP_DIR) $(STL_DIR) $(OTHER_STL_DIR)
 
 clean:
 	rm -rf $(CLEANOBJS)

@@ -1,6 +1,9 @@
 #! /usr/bin/env {{cookiecutter.python_command}}
 import sys
+import os
+import textwrap
 import argparse
+from pathlib import Path
 
 def add_assembly(name, args):
     print(f'Adding assembly name {name}.')
@@ -39,7 +42,15 @@ def make_assembly(name, args):
     add_assembly_function(name, args)
 
 def main(argv):
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser \
+           (prog='ProgramName',
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            epilog=textwrap.dedent('''\
+            Help:
+            This program adds an assembly. Default arguments
+            can be added in the file .make_assembly.conf in the
+            root of the project. See that file for details.
+         '''))
     parser.add_argument("-a", "--assembly", 
                         action='store_const', 
                         const='assemblies',
@@ -63,5 +74,33 @@ def main(argv):
         make_assembly(name, args)
     sys.exit(0)
 
+def find_root():
+    # Keep going up until we hit the root.
+    # At the root ./.. == .
+    last_dotdir = None
+    dotdir = Path(".")
+    while dotdir != last_dotdir:
+        p = dotdir / Path(".root")
+        if p.exists:
+           return os.path.abspath(dotdir)
+        last_dotdir = dotdir
+        dotdir = Path("..")
+    return None
+
+def get_default_args():
+    root = find_root()
+    if not root:
+        print('Cannot find the root directory.', file=sys.err)
+        sys.exit(100)
+    confile = root / Path(".make_assembly.conf")
+    if confile.exists():
+       with open(confile, "r") as cf:
+            lines = cf.read().split("\n")
+            args = [t for t in lines if len(t) > 0 and not t.startswith('#')]
+            return args
+    return []
+
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    all_args = get_default_args()
+    all_args += sys.argv[1:]
+    main(all_args)

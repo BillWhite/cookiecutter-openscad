@@ -7,5 +7,6 @@
     "project_short_description": "OpenScad Boilerplate contains all the boilerplate you need to create an OpenScad package.",
     "version": "0.1.0",
     "create_author_file": "y",
+    "python_command": "python3",
     "open_source_license": ["GNU General Public License v3", "BSD license", "ISC license", "Apache Software License 2.0", "MIT license", "Not open source"]
 }

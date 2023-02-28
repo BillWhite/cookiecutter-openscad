@@ -1,0 +1,67 @@
+#! /usr/bin/env {{cookiecutter.python_command}}
+import sys
+import argparse
+
+def add_assembly(name, args):
+    print(f'Adding assembly name {name}.')
+    filename=f'{args.kind}.txt'
+    with open(filename, "r") as f:
+        s=f.read()
+    assemblies=[]
+    for file in s.split('\n'):
+        fs = file.strip();
+        if len(fs) > 0:
+            assemblies += fs
+    if not name in assemblies:
+        assemblies += name
+    with open(filename, "w") as f:
+        for name in assemblies:
+            f.write(name + '\n')
+
+def add_assembly_function(name, args):
+    with open(f"src/{name}.scad", "w") as f:
+        if args.griscad:
+            print('include <GRISCAD/assemblies.scad>', file=f)
+        if args.main:
+            if len(args.main) < 5 or args.main[-5:] != '.scad':
+                print(f'include <{args.main}.scad>', file=f)
+            else:
+                print(f'include <{args.main}>', file=f)
+        if args.griscad:
+            print('\nassembly(debug=false) {', file=f)
+            print(f'    {name}();', file=f)
+            print('}\n', file=f)
+        else:
+            print(f'\n{name}();', file=f);
+
+def make_assembly(name, args):
+    add_assembly(name, args)
+    add_assembly_function(name, args)
+
+def main(argv):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-a", "--assembly", 
+                        action='store_const', 
+                        const='assemblies',
+                        dest='kind',
+                        default='assemblies', 
+                        help="Make exported assemblies. (default).")
+    parser.add_argument("-o", "--other", 
+                        action='store_const', 
+                        const='others',
+                        dest='kind',
+                        help="Make ancillary ssemblies.")
+    parser.add_argument("-m", "--main",
+                        help='OpenScad source which defines the assembly objects.')
+    parser.add_argument("-g", "--griscad", 
+                        action='store_true',
+                        default=False,
+                        help="Use GRISCAD assemblies.")
+    parser.add_argument("names", nargs='+', help="names of the assemblies to add.")
+    args = parser.parse_args(argv)
+    for name in args.names:
+        make_assembly(name, args)
+    sys.exit(0)
+
+if __name__ == '__main__':
+    main(sys.argv[1:])

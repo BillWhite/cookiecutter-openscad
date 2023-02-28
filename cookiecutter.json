@@ -8,5 +8,6 @@
     "version": "0.1.0",
     "create_author_file": "y",
     "python_command": "python3",
-    "open_source_license": ["GNU General Public License v3", "BSD license", "ISC license", "Apache Software License 2.0", "MIT license", "Not open source"]
+    "open_source_license": ["GNU General Public License v3", "BSD license", "ISC license", "Apache Software License 2.0", "MIT license", "Not open source"],
+    "template_version": "0.1.0"
 }

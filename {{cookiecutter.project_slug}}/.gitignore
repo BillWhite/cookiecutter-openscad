@@ -1,2 +1,7 @@
 stl/
 .deps/
+#
+# Emacs seems to leave a lot of these around.
+.*.~undo-tree~
+\#*
+*~

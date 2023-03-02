@@ -5,23 +5,52 @@ import textwrap
 import argparse
 from pathlib import Path
 
+all_assemblies = {}
+
+def get_assemblies():
+    for aname in ['assemblies', 'others']:
+        assemblies = []
+        filename=f'{aname}.txt'
+        with open(filename, "r") as f:
+            s=f.read()
+        for file in s.split('\n'):
+            fs = file.strip();
+            if len(fs) > 0:
+                assemblies += [fs]
+        all_assemblies[aname] = assemblies
+
+def find_assembly(name, kind):
+    for akind in all_assemblies.keys():
+        if akind == kind:
+            continue
+        if name in all_assemblies.get(akind, []):
+            print(f'Warning: assembly {name} is in both of {akind} and {kind}')
+            return True
+    return False
+
 def add_assembly(name, args):
+    kind = args.kind
+    if find_assembly(name, kind) and not args.force:
+       sys.exit(100)
     print(f'Adding assembly name {name}.')
-    filename=f'{args.kind}.txt'
-    with open(filename, "r") as f:
-        s=f.read()
-    assemblies=[]
-    for file in s.split('\n'):
-        fs = file.strip();
-        if len(fs) > 0:
-            assemblies += fs
+    assemblies = all_assemblies.get(kind, [])
     if not name in assemblies:
-        assemblies += name
-    with open(filename, "w") as f:
-        for name in assemblies:
-            f.write(name + '\n')
+        assemblies += [name]
+        all_assemblies[kind] = assemblies
+
+def put_assemblies():
+    for aname in all_assemblies.keys():
+        filename = f'{aname}.txt'
+        assemblies = all_assemblies[aname]
+        with open(filename, "w") as f:
+            for name in assemblies:
+                f.write(name + '\n')
 
 def add_assembly_function(name, args):
+    filepath = Path("src") / Path(f'{name}.scad');
+    if filepath.exists() and not args.force:
+        print(f'Fatal error: will not overwrite scad file {str(filepath)}')
+        return False
     with open(f"src/{name}.scad", "w") as f:
         if args.griscad:
             print('include <GRISCAD/assemblies.scad>', file=f)
@@ -36,6 +65,7 @@ def add_assembly_function(name, args):
             print('}\n', file=f)
         else:
             print(f'\n{name}();', file=f);
+    return True
 
 def make_assembly(name, args):
     add_assembly(name, args)
@@ -68,10 +98,16 @@ def main(argv):
                         action='store_true',
                         default=False,
                         help="Use GRISCAD assemblies.")
+    parser.add_argument("-f", "--force",
+                        action='store_true',
+                        default=False,
+                        help="Overwrite existing .scad files.")
     parser.add_argument("names", nargs='+', help="names of the assemblies to add.")
     args = parser.parse_args(argv)
+    get_assemblies()
     for name in args.names:
         make_assembly(name, args)
+    put_assemblies()
     sys.exit(0)
 
 def find_root():

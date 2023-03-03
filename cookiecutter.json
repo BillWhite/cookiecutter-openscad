@@ -8,6 +8,11 @@
     "version": "0.1.0",
     "create_author_file": "y",
     "python_command": "python3",
+    "use_griscad": "y",
+    "main_file": "",
+    "main_assemblies": "",
+    "other_assemblies": "",
+    "other_source_files": "",
     "open_source_license": ["GNU General Public License v3", "BSD license", "ISC license", "Apache Software License 2.0", "MIT license", "Not open source"],
     "template_version": "0.1.0"
 }

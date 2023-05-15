@@ -102,7 +102,7 @@ def main(argv):
                         action='store_true',
                         default=False,
                         help="Overwrite existing .scad files.")
-    parser.add_argument("names", nargs='+', help="names of the assemblies to add.")
+    parser.add_argument("names", nargs='*', help="names of the assemblies to add.")
     args = parser.parse_args(argv)
     get_assemblies()
     for name in args.names:

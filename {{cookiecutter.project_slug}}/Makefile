@@ -1,4 +1,6 @@
-ASSEMBLIES=$(shell cat assemblies.txt)
+# Ignore comments in the assemblies.txt file. These
+# lines start with a barb.
+ASSEMBLIES=$(shell cat assemblies.txt | grep -v '^#')
 OTHERS=$(shell cat others.txt)
 DEP_DIR=.deps
 STL_DIR=stl

@@ -23,7 +23,7 @@ def make_source_files(strlist, contents=[]):
 def make_one_assembly_definition(namelist) -> list[str]:
     answer = []
     for name in namelist:
-        answer += ['module ' + name + ' {', '}']
+        answer += ['module ' + name + '() {', '    cube(10);', '}']
     return answer
 
 CONFIG_CONTENTS =['include <GRISCAD/units.scad>',
